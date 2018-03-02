@@ -1,7 +1,7 @@
 FILE,LAD 2:
 SOR,0 EOR,0
 RCM,Batching PLC Program - Authors: Alex Cutsinger, Daniel Hinkle, and Korbyn Thompson
-SOR,1 EOR,1
+SOR,1 EQU,N7:64,0 XIC,B3:0/0 JSR,U:3 EOR,1
 RCM,
 SOR,2 EOR,2
 RCM,
@@ -22,7 +22,13 @@ RCM,
 SOR,10 END,10
 RCM,
 FILE,SBR 3:
-SOR,0 END,0
+SOR,0 EOR,0
+RCM,Formula Setting Function
+SOR,1 EOR,1
+RCM,
+SOR,2 EOR,2
+RCM,
+SOR,3 END,3
 RCM,
 FILE,SBR 4:
 SOR,0 END,0
@@ -346,3 +352,6 @@ FTBL
 0
 0
 SYMBOLS
+N7:64 State
+B3:0/0 RUN
+U:3 Formula Entry

@@ -1,25 +1,37 @@
 FILE,LAD 2:
 SOR,0 EOR,0
 RCM,Batching PLC Program - Authors: Alex Cutsinger, Daniel Hinkle, and Korbyn Thompson
-SOR,1 EQU,N7:64,0 XIC,B3:0/0 JSR,U:3 EOR,1
+SOR,1 BST,1 XIC,I:1/0 NXB,1 XIC,B3:0/0 BND,1 OTE,B3:0/0 EOR,1
+RCM,Global Start
+SOR,2 BST,1 XIO,B3:0/0 NXB,1 XIC,B3:0/1 BND,1 EQU,N7:64,0 JSR,U:3 EOR,2
+RCM,If "RUN" hasn't been pressed, and we're in the formula entry state, go to the formula entry subroutine
+SOR,3 XIC,B3:0/0 XIO,B3:0/1 EQU,N7:64,1 JSR,U:4 EOR,3
+RCM,If "RUN" has been pressed, and we're in the "safe start" state, go to the safe start subroutine.
+SOR,4 XIC,B3:0/0 XIO,B3:0/1 EQU,N7:64,2 BST,1 JSR,U:5 NXB,1 JSR,U:6 BND,1 EOR,4
+RCM,If "RUN" has been pressed, and we're in the "fill both" state, then fill both.
+SOR,5 XIC,B3:0/0 XIO,B3:0/1 EQU,N7:64,3 JSR,U:5 EOR,5
+RCM,If "RUN" has been pressed, and we're in the "Fill pump 1" state, go to the Fill pump 1 subroutine.
+SOR,6 XIC,B3:0/0 XIO,B3:0/1 EQU,N7:64,4 JSR,U:6 EOR,6
+RCM,If "RUN" has been pressed, and we're in the "Fill pump 2" state, go to the Fill pump 2 subroutine.
+SOR,7 XIC,B3:0/0 XIO,B3:0/1 EQU,N7:64,5 JSR,U:7 EOR,7
+RCM,If "RUN" has been pressed, and we're in the "Finish Filling" state, go to the Finish Filling subroutine.
+SOR,8 XIC,B3:0/0 XIO,B3:0/1 EQU,N7:64,6 JSR,U:8 EOR,8
+RCM,If "RUN" has been pressed, and we're in the "Tank Full" state, go to the Tank Full subroutine.
+SOR,9 BST,1 XIC,B3:0/0 XIC,I:1/1 NXB,1 XIC,B3:0/1 BND,1 MCR,Active EOR,9
+RCM,If "RUN" has been pressed and "STOP" has been pressed, pause everything
+SOR,10 BST,1 OTU,O:2/0 NXB,1 BST,2 OTU,O:2/1 NXB,2 BST,3 OTU,O:2/2 NXB,3 BST,4 OTU,O:2/4 NXB,4 BST,5 OTU,O:2/3 NXB,5 OTE,B3:0/1 BND,5 BND,4 BND,3 BND,2 BND,1 EOR,10
 RCM,
-SOR,2 EOR,2
+SOR,11 XIC,S:4/4 OTE,O:2/6 EOR,11
 RCM,
-SOR,3 EOR,3
+SOR,12 XIC,I:1/1 TON,T4:0,0 EOR,12
 RCM,
-SOR,4 EOR,4
+SOR,13 XIC,T4:0/DN OTU,B3:0/0 EOR,13
 RCM,
-SOR,5 EOR,5
+SOR,14 MCR,Active EOR,14
 RCM,
-SOR,6 EOR,6
+SOR,15 EOR,15
 RCM,
-SOR,7 EOR,7
-RCM,
-SOR,8 EOR,8
-RCM,
-SOR,9 EOR,9
-RCM,
-SOR,10 END,10
+SOR,16 END,16
 RCM,
 FILE,SBR 3:
 SOR,0 EOR,0
@@ -355,3 +367,21 @@ SYMBOLS
 N7:64 State
 B3:0/0 RUN
 U:3 Formula Entry
+U:4 Safe Start
+U:5 Full pump 1
+U:6 Fill pump 2
+U:7 Finish Filling
+U:8 Tank Full
+U:9 IDLE/PAUSE
+B3:0/1 Pause
+O:2/1 Fill pump 1
+O:2/4 Heater
+O:2/3 Drain Pump 3
+O:2/0 Mixer
+I:1/1 STOP
+S:4/4 Pause Blink
+O:2/6 IDLE Lamp
+I:1/0 START
+B3:0/2 STOP SIGNAL
+T4:0 Job Reset
+T4:0/DN RESET JOB

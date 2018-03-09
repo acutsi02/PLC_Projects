@@ -1,10 +1,10 @@
 FILE,LAD 2:
 SOR,0 EOR,0
 RCM,Batching PLC Program - Authors: Alex Cutsinger, Daniel Hinkle, and Korbyn Thompson
-SOR,1 BST,1 XIC,I:1/0 NXB,1 XIC,B3:0/0 BND,1 OTE,B3:0/0 EOR,1
-RCM,Global Start
-SOR,2 BST,1 XIO,B3:0/0 NXB,1 XIC,B3:0/1 BND,1 EQU,N7:64,0 JSR,U:3 EOR,2
-RCM,If "RUN" hasn't been pressed, and we're in the formula entry state, go to the formula entry subroutine
+SOR,1 BST,1 XIC,I:1/0 XIC,B3:0/2 NXB,1 XIC,B3:0/0 BND,1 OTE,B3:0/0 EOR,1
+RCM,If Start is pressed, start the job
+SOR,2 BST,1 XIO,B3:0/0 NXB,1 XIC,B3:0/1 BND,1 JSR,U:3 EOR,2
+RCM,If not in RUN mode or in Pause mode, allow formula entry.
 SOR,3 XIC,B3:0/0 XIO,B3:0/1 EQU,N7:64,1 JSR,U:4 EOR,3
 RCM,If "RUN" has been pressed, and we're in the "safe start" state, go to the safe start subroutine.
 SOR,4 XIC,B3:0/0 XIO,B3:0/1 EQU,N7:64,2 BST,1 JSR,U:5 NXB,1 JSR,U:6 BND,1 EOR,4
@@ -17,9 +17,9 @@ SOR,7 XIC,B3:0/0 XIO,B3:0/1 EQU,N7:64,5 JSR,U:7 EOR,7
 RCM,If "RUN" has been pressed, and we're in the "Finish Filling" state, go to the Finish Filling subroutine.
 SOR,8 XIC,B3:0/0 XIO,B3:0/1 EQU,N7:64,6 JSR,U:8 EOR,8
 RCM,If "RUN" has been pressed, and we're in the "Tank Full" state, go to the Tank Full subroutine.
-SOR,9 BST,1 XIC,B3:0/0 XIC,I:1/1 NXB,1 XIC,B3:0/1 BND,1 MCR,Active EOR,9
+SOR,9 BST,1 XIC,B3:0/0 XIO,I:1/1 NXB,1 XIC,B3:0/1 BND,1 MCR,Active EOR,9
 RCM,If "RUN" has been pressed and "STOP" has been pressed, pause everything
-SOR,10 BST,1 OTU,O:2/0 NXB,1 BST,2 OTU,O:2/1 NXB,2 BST,3 OTU,O:2/2 NXB,3 BST,4 OTU,O:2/4 NXB,4 BST,5 OTU,O:2/3 NXB,5 OTE,B3:0/1 BND,5 BND,4 BND,3 BND,2 BND,1 EOR,10
+SOR,10 OTE,B3:0/1 EOR,10
 RCM,
 SOR,11 XIC,S:4/4 OTE,O:2/6 EOR,11
 RCM,
@@ -29,9 +29,23 @@ SOR,13 XIC,T4:0/DN OTU,B3:0/0 EOR,13
 RCM,
 SOR,14 MCR,Active EOR,14
 RCM,
-SOR,15 EOR,15
+SOR,15 XIC,I:1/5 CTU,C5:1,0 EOR,15
 RCM,
-SOR,16 END,16
+SOR,16 XIC,I:1/6 CTU,C5:2,0 EOR,16
+RCM,
+SOR,17 XIC,I:1/7 CTU,C5:3,0 EOR,17
+RCM,
+SOR,18 BST,1 ADD,C5:1.ACC,C5:2.ACC,N7:52 NXB,1 SUB,N7:52,C5:3.ACC,N7:52 BND,1 EOR,18
+RCM,Add up how much is in the tank:
+SOR,19 XIC,B3:5/0 XIO,B3:0/1 BST,1 OTE,O:2/0 NXB,1 RTO,T4:1,0 BND,1 EOR,19
+RCM,
+SOR,20 XIC,B3:5/3 XIO,B3:0/1 XIC,I:1/2 OTE,O:2/4 EOR,20
+RCM,
+SOR,21 EOR,21
+RCM,
+SOR,22 EOR,22
+RCM,
+SOR,23 END,23
 RCM,
 FILE,SBR 3:
 SOR,0 EOR,0
@@ -40,24 +54,22 @@ SOR,1 EOR,1
 RCM,
 SOR,2 EOR,2
 RCM,
-SOR,3 END,3
+SOR,3 EOR,3
+RCM,
+SOR,4 EOR,4
+RCM,
+SOR,5 EOR,5
+RCM,
+SOR,6 END,6
 RCM,
 FILE,SBR 4:
 SOR,0 END,0
 RCM,
 FILE,SBR 5:
-SOR,0 XIO,I:1/4 EQU,N7:49,C5:1 OTE,B3:1 EOR,0
-RCM,fill_pump_1
-SOR,1 END,1
+SOR,0 END,0
 RCM,
 FILE,SBR 6:
-SOR,0 XIO,I:1/4 EQU,N7:49,C5:2 OTE,B3:5/2 EOR,0
-RCM,
-SOR,1 GRT,N7:52,50 BST,1 OTE,B3:5/0 NXB,1 XIC,N7:51/0 OTE,B3:5/3 BND,1 EOR,1
-RCM,
-SOR,2 EOR,2
-RCM,
-SOR,3 END,3
+SOR,0 END,0
 RCM,
 FILE,SBR 7:
 SOR,0 END,0
@@ -376,7 +388,7 @@ N7:64 State
 B3:0/0 RUN
 U:3 Formula Entry
 U:4 Safe Start
-U:5 Full pump 1
+U:5 Fill pump 1
 U:6 Fill pump 2
 U:7 Finish Filling
 U:8 Tank Full
@@ -390,10 +402,16 @@ I:1/1 STOP
 S:4/4 Pause Blink
 O:2/6 IDLE Lamp
 I:1/0 START
-B3:0/2 STOP SIGNAL
+B3:0/2 JOB START ALLOWED
 T4:0 Job Reset
 T4:0/DN RESET JOB
-I:1/5 flow_meter
-0 run_p1
-C5:0 pump1_amount
-I:1/4 HI-LEVEL
+C5:2 Pump 2
+C5:1 Pump 1
+C5:3 Pump 3
+I:1/5 FM-1
+I:1/6 FM-2
+I:1/7 FM-3
+I:1/2 Temp_I_lock
+B3:5/3 Heater_Enable
+B3:5/0 Mixer_Enable
+T4:1 Mix Time

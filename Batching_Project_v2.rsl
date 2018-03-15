@@ -1,0 +1,490 @@
+FILE,LAD 2
+SOR,0 EOR,0
+RCM,
+SOR,1 BST,1 XIC,I:1/0 XIC,B3:0/2 NXB,1 XIC,B3:0/0 BND,1 OTE,B3:0/0 EOR,1
+RCM,Start the job if it's allowed
+SOR,2 BST,1 XIC,B3:0/1 NXB,1 XIO,B3:0/0 BND,1 JSR,U:3 EOR,2
+RCM,If the machine is not currently running, allow formula entry
+SOR,3 EOR,3
+RCM,
+SOR,4 BST,1 XIC,I:1/1 NXB,1 XIC,B3:0/1 BND,1 XIC,B3:0/0 MCR,Active EOR,4
+RCM,Enter "Pause" mode
+SOR,5 XIO,I:1/0 OTE,B3:0/1 EOR,5
+RCM,Latch into "Pause" mode as long as the resume button has not been pressed
+SOR,6 XIC,I:1/1 TON,T4:0,0 EOR,6
+RCM,
+SOR,7 XIC,T4:3/DN BST,1 MOV,0,N7:64 NXB,1 BST,2 RES,C5:1 NXB,2 BST,3 RES,C5:2 NXB,3 BST,4 RES,C5:3 NXB,4 BST,5 RES,C5:99 NXB,5 BST,6 MOV,0,B3:0 NXB,6 MOV,0,B3:5 BND,6 BND,5 BND,4 BND,3 BND,2 BND,1 EOR,7
+RCM,On press and hold, reset the machine
+SOR,8 MCR,Active EOR,8
+RCM,
+SOR,9 EOR,9
+RCM,
+SOR,10 EOR,10
+RCM,
+SOR,11 EOR,11
+RCM,
+SOR,12 XIC,O:2/0 RTO,T4:1,0 EOR,12
+RCM,Time the mixer to ensure a minimum mix time
+SOR,13 XIC,I:1/5 CTU,C5:1,0 EOR,13
+RCM,Measure Pump 1 Inputs
+SOR,14 XIC,I:1/6 CTU,C5:2,0 EOR,14
+RCM,Measure Pump 2 Inputs
+SOR,15 XIC,I:1/7 CTU,C5:3,0 EOR,15
+RCM,Measure Pump 3 Output
+SOR,16 BST,1 ADD,C5:1.ACC,C5:2.ACC,N7:52 NXB,1 SUB,N7:52,C5:3.ACC,N7:52 BND,1 EOR,16
+RCM,Calculate the contents of the tank
+SOR,17 XIC,B3:0/0 XIO,B3:0/1 XIC,B3:5/1 XIO,I:1/4 OTE,O:2/1 EOR,17
+RCM,Pump 1 interlocks
+SOR,18 XIC,B3:0/0 XIO,B3:0/1 XIC,B3:5/2 XIO,I:1/4 OTE,O:2/2 EOR,18
+RCM,Pump 2 interlocks
+SOR,19 BST,1 XIC,B3:0/0 XIO,B3:0/1 XIC,B3:5/4 NXB,1 BST,2 XIC,I:1/11 XIC,I:1/0 NXB,2 XIC,O:2/3 BND,2 BND,1 XIC,I:1/3 OTE,O:2/3 EOR,19
+RCM,Drain pump interlocks
+SOR,20 XIC,B3:0/0 XIO,B3:0/1 XIC,B3:5/3 XIO,I:1/2 XIO,I:1/3 XIO,O:2/3 OTE,O:2/4 EOR,20
+RCM,Heater Interlocks
+SOR,21 XIC,B3:0/0 XIO,B3:0/1 GRT,N7:52,40 GEQ,C5:2,0 OTE,O:2/0 EOR,21
+RCM,Mixer Interlocks
+SOR,22 END,22
+RCM,
+FILE,SBR 3:
+SOR,0 EOR,0
+RCM,Formula Setting Function
+SOR,1 XIC,I:1/8 MCR,Active EOR,1
+RCM,
+SOR,2 MEQ,I:3,61440,4096 BST,1 MVM,I:3,4095,N7:20 NXB,1 BST,2 MOV,N7:20,O:4 NXB,2 FRD,N7:20,N7:40 BND,2 BND,1 EOR,2
+RCM,Formula A, Pump 1 amount in gallons.
+SOR,3 MEQ,I:3,61440,8192 BST,1 MVM,I:3,4095,N7:21 NXB,1 BST,2 MOV,N7:21,O:4 NXB,2 FRD,N7:21,N7:41 BND,2 BND,1 EOR,3
+RCM,Formula A, Pump 2 amount in gallons.
+SOR,4 MEQ,I:3,61440,12288 BST,1 MVM,I:3,4095,N7:22 NXB,1 BST,2 MOV,N7:22,O:4 NXB,2 FRD,N7:22,N7:42 BND,2 BND,1 EOR,4
+RCM,Formula A, Mix time in tenths of a second
+SOR,5 MEQ,I:3,61440,16384 BST,1 MOV,0,N7:43 NXB,1 MOV,0,O:4 BND,1 EOR,5
+RCM,Clear flags before saving new states
+SOR,6 MEQ,I:3,61455,16385 OTL,O:4/0 OTL,N7:43/0 EOR,6
+RCM,Formula A, Heater or No Heater.
+SOR,7 MEQ,I:3,61680,16400 OTL,O:4/4 OTL,N7:43/1 EOR,7
+RCM,Formula A, Pump Simultaneously?
+SOR,8 EOR,8
+RCM,
+SOR,9 MEQ,I:3,61440,20480 BST,1 MVM,I:3,4095,N7:24 NXB,1 BST,2 MOV,N7:24,O:4 NXB,2 FRD,N7:24,N7:44 BND,2 BND,1 EOR,9
+RCM,Formula B, Pump 1 amount in gallons.
+SOR,10 MEQ,I:3,61440,24576 BST,1 MVM,I:3,4095,N7:25 NXB,1 BST,2 MOV,N7:25,O:4 NXB,2 FRD,N7:25,N7:45 BND,2 BND,1 EOR,10
+RCM,Formula B, Pump 2 amount in gallons.
+SOR,11 MEQ,I:3,61440,28672 BST,1 MVM,I:3,4095,N7:26 NXB,1 BST,2 MOV,N7:26,O:4 NXB,2 FRD,N7:26,N7:46 BND,2 BND,1 EOR,11
+RCM,Formula B, Mix time in tenths of a second
+SOR,12 MEQ,I:3,61440,32768 BST,1 MOV,0,N7:47 NXB,1 MOV,0,O:4 BND,1 EOR,12
+RCM,Clear flags before saving new states
+SOR,13 MEQ,I:3,61455,32769 BST,1 OTL,N7:47/0 NXB,1 OTL,O:4/0 BND,1 EOR,13
+RCM,Formula B, Heater or No Heater.
+SOR,14 MEQ,I:3,61680,32784 BST,1 OTL,N7:47/1 NXB,1 OTL,O:4/4 BND,1 EOR,14
+RCM,Formula B, Pump Simultaneously?
+SOR,15 MEQ,I:3,61440,0 BST,1 MVM,I:3,4095,N7:27 NXB,1 BST,2 MOV,N7:27,O:4 NXB,2 FRD,N7:27,N7:39 BND,2 BND,1 EOR,15
+RCM,Batches to run in this job
+SOR,16 MCR,Active EOR,16
+RCM,
+SOR,17 EOR,17
+RCM,Check formulas for safety (not overflowing, not empty formulas, etc.)
+SOR,18 ADD,N7:40,N7:41,N7:28 EOR,18
+RCM,
+SOR,19 GRT,N7:40,0 GRT,N7:41,0 LEQ,N7:28,306 OTE,B3:20/0 EOR,19
+RCM,
+SOR,20 ADD,N7:44,N7:45,N7:29 EOR,20
+RCM,
+SOR,21 GRT,N7:44,0 GRT,N7:45,0 LEQ,N7:29,306 OTE,B3:20/1 EOR,21
+RCM,
+SOR,22 XIC,B3:20/0 XIC,B3:20/1 OTL,B3:0/2 EOR,22
+RCM,
+SOR,23 EOR,23
+RCM,
+SOR,24 EOR,24
+RCM,
+SOR,25 EOR,25
+RCM,
+SOR,26 EOR,26
+RCM,
+SOR,27 END,27
+RCM,
+FILE,SBR 4:
+SOR,0 END,0
+RCM,
+FILE,SBR 5:
+SOR,0 END,0
+RCM,
+FILE,SBR 6:
+SOR,0 END,0
+RCM,
+FILE,SBR 7:
+SOR,0 END,0
+RCM,
+FILE,SBR 8:
+SOR,0 END,0
+RCM,
+FILE,SBR 9:
+SOR,0 END,0
+RCM,
+BTBL
+5
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+3
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+NTBL
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+273
+273
+273
+0
+273
+273
+273
+4
+222
+222
+0
+0
+0
+0
+0
+0
+0
+0
+0
+4
+111
+111
+111
+3
+111
+111
+111
+3
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+FTBL
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+SYMBOLS
+N7:64 State
+B3:0/0 RUN
+U:3 Formula Input
+U:4 Safe Start
+U:5 Fill pump 1
+U:6 Fill pump 2
+U:7 Finish Filling
+U:8 Tank Full
+U:9 IDLE/PAUSE
+B3:0/1 Pause
+O:2/1 Fill Pump 1
+O:2/4 Heater
+O:2/3 Drain Pump 3
+O:2/0 Mixer
+I:1/1 STOP
+S:4/4 Pause Blink
+O:2/6 IDLE Lamp
+I:1/0 START
+B3:0/2 JOB START ALLOWED
+T4:0 Job Reset
+T4:0/DN RESET JOB
+C5:2 Pump 2
+C5:1 Pump 1
+C5:3 Pump 3
+I:1/5 FM-1
+I:1/6 FM-2
+I:1/7 FM-3
+I:1/2 Temp_I_lock
+B3:5/3 Heater_Enable
+B3:5/0 Mixer_Enable
+T4:1 Mix Time
+I:1/4 Hi_Level
+N7:51/0 Active_Formula_Heat_Flag
+B3:5/1 Pump_1_Enable
+B3:5/2 Pump_2_Enable
+I:1/8 PB-Enter
+N7:47/0 Formula_B_Heat
+N7:47/1 Formula_B_Both
+N7:43/0 Formula_A_Heat
+N7:43/1 Formula_A_Both
+B3:20/0 Formula 1 OK
+B3:20/1 Formula 2 OK
+I:1/3 LO_LEVEL
+C5:1/DN Pump 1 Done
+C5:2/DN Pump 2 Done
+T4:1/DN Mixing Done
+B3:5/4 Drain Pump Allow
+C5:99 Batches Complete
+O:2/2 Fill Pump 2
+B3:1/0 RUN_OSR
+I:1/9 Formula_A
+I:1/10 Formula_B
+O:2/5 RUN Lamp
+T4:2/DN Safe Delay Done
+I:1/11 Drain Selector
+N7:51/1 Active Formula Both
+B3:0/4 Safe Start
+T4:2 Safe Start Timer
+C5:99/DN Done with Job
+B3:3/0 Batch Reset
+T4:2/TT Safe Delay Timing
+T4:3 Reset Button
+T4:3/DN Reset
+N7:52 Net tank content

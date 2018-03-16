@@ -458,18 +458,12 @@ I:3 TWS
 O:4 BCD
 U:3 Formula Entry
 U:4 Safe Start
-U:5 Fill pump 1
-U:6 Fill pump 2
-U:7 Finish Filling
-U:8 Tank Full
-U:9 IDLE/PAUSE
 B3:0/1 Pause
 O:2/1 PMP1
 O:2/4 HTR
 O:2/3 PMP3
 O:2/0 MXR
 I:1/1 PB3 (STOP)
-S:4/4 Pause Blink
 O:2/6 L1 (IDLE)
 I:1/0 PB2 (START)
 B3:0/2 JOB START ALLOWED
@@ -483,7 +477,6 @@ I:1/6 FM2
 I:1/7 FM3
 I:1/2 TT1 (Thermostat)
 B3:5/3 Heater_Enable
-B3:5/0 Mixer_Enable
 T4:1 Mix Time
 I:1/4 LI1 (HI-LEVEL)
 N7:51/0 Active_Formula_Heat_Flag
@@ -513,10 +506,7 @@ N7:51/1 Active Formula Both
 B3:0/4 Safe Start
 T4:2 Safe Start Timer
 C5:99/DN Done with Job
-B3:3/0 Batch Reset
 T4:2/TT Safe Delay Timing
-T4:3 Reset Button
-T4:3/DN Reset
 N7:52 Net tank content
 S:4/5 Safe Blink
 B3:4/0 RUN Lamp Enable
